@@ -4,10 +4,6 @@
     android:versionCode="1"
     android:versionName="1.0" >
 
-    <uses-sdk
-        android:minSdkVersion="9"
-        android:targetSdkVersion="22" />
-
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -24,9 +20,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="1d530866e0cb30a5451eee4b86edfa0e9f13de4a" />
     </application>
 
 </manifest>

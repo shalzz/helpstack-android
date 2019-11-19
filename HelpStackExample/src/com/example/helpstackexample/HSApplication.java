@@ -2,11 +2,8 @@ package com.example.helpstackexample;
 
 import android.app.Application;
 
-import com.crashlytics.android.Crashlytics;
 import com.tenmiles.helpstack.HSHelpStack;
 import com.tenmiles.helpstack.gears.HSEmailGear;
-
-import io.fabric.sdk.android.Fabric;
 
 public class HSApplication extends Application {
 
@@ -16,7 +13,6 @@ public class HSApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        Fabric.with(this, new Crashlytics());
         helpStack = HSHelpStack.getInstance(this);
 
         HSEmailGear emailGear = new HSEmailGear("foo@bar.com", R.xml.articles);

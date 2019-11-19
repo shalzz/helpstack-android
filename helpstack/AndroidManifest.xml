@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tenmiles.helpstack"
-    >
+    android:versionCode="1"
+    android:versionName="1.0"
+    package="com.tenmiles.helpstack">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -14,25 +15,24 @@
             android:label="@string/hs_app_name">
             <intent-filter>
                 <action android:name="com.tenmiles.helpstack.ShowHelp" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
             android:name=".activities.NewIssueActivity"
-            android:windowSoftInputMode="adjustResize"></activity>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".activities.NewUserActivity"
-            android:windowSoftInputMode="adjustResize"></activity>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".activities.IssueDetailActivity"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"></activity>
-        <activity android:name=".activities.ArticleActivity"></activity>
-        <activity android:name=".activities.SectionActivity"></activity>
-        <activity android:name=".activities.ImageAttachmentDisplayActivity"></activity>
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+        <activity android:name=".activities.ArticleActivity" />
+        <activity android:name=".activities.SectionActivity" />
+        <activity android:name=".activities.ImageAttachmentDisplayActivity" />
         <activity
             android:name=".activities.EditAttachmentActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
 
         <receiver
             android:name=".service.AttachmentDownloadReceiver"
