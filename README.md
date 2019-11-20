@@ -36,16 +36,16 @@ Have you made something awesome with HelpStack? Add yourself here: [App Showcase
 
 Installing the HelpStack library is fairly straight-forward. 
 
-1. Add jcenter as a repository to your app's build.gradle
+1. Add jitpack as a repository to your app's build.gradle
 
         repositories {
-          jcenter()
+          maven { url 'https://jitpack.io' }
         }
         
 2. Add *com.tenmiles:helpstack:1.2.0* as a dependency in the same build.gradle
         
         dependencies {
-          compile 'com.tenmiles:helpstack:1.2.0'
+          compile 'com.shalzz:helpstack-android:1.3.4'
         }
 
 3. Add this to avoid *duplicate file during packaging APK*
