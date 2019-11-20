@@ -58,6 +58,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 
 public class HSSource {
@@ -145,12 +146,8 @@ public class HSSource {
         }
 
         if (error.networkResponse != null && error.networkResponse.data != null) {
-            try {
-                Log.e(HSHelpStack.LOG_TAG, new String(error.networkResponse.data, "utf-8"));
+            Log.e(HSHelpStack.LOG_TAG, new String(error.networkResponse.data, StandardCharsets.UTF_8));
 
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
         }
 
         error.printStackTrace();

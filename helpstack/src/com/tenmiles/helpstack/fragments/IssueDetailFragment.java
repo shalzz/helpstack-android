@@ -95,12 +95,12 @@ public class IssueDetailFragment extends HSFragmentParent {
 		
 		View rootView = inflater.inflate(R.layout.hs_fragment_issue_detail, null);
 		
-        replyEditTextView = (EditText) rootView.findViewById(R.id.replyEditText);
-		sendButton = (ImageView)rootView.findViewById(R.id.button1);
+        replyEditTextView = rootView.findViewById(R.id.replyEditText);
+		sendButton = rootView.findViewById(R.id.button1);
 		sendButton.setOnClickListener(sendReplyListener);
 		
-		mExpandableListView = (ExpandableListView) rootView.findViewById(R.id.expandableList);
-		mAttachmentButton = (ImageView) rootView.findViewById(R.id.attachmentbutton);
+		mExpandableListView = rootView.findViewById(R.id.expandableList);
+		mAttachmentButton = rootView.findViewById(R.id.attachmentbutton);
 		
 		mAttachmentButton.setOnClickListener(attachmentClickListener);
 		
@@ -197,9 +197,9 @@ public class IssueDetailFragment extends HSFragmentParent {
 	        selectedAttachment = HSAttachment.createAttachment(selectedImage.toString(), display_name, mime_type);
 			resetAttachmentImage();
         }
-	};
-	
-	@Override
+	}
+
+    @Override
 	public void onDetach() {
 		gearSource.cancelOperation("REPLY_TO_A_TICKET");
 		gearSource.cancelOperation("ALL_UPDATES");
@@ -391,12 +391,12 @@ public class IssueDetailFragment extends HSFragmentParent {
 		String[] attachmentNames = attachments.toArray(new String[attachments.size()]);
 		AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
 		LayoutInflater inflater = getActivity().getLayoutInflater();
-        View convertView = (View) inflater.inflate(R.layout.hs_attachment_dialog, null);
+        View convertView = inflater.inflate(R.layout.hs_attachment_dialog, null);
         alertDialog.setView(convertView);
         alertDialog.setTitle(getResources().getString(R.string.hs_attachments));
         final AlertDialog dialog = alertDialog.create();
         
-        ListView lv = (ListView) convertView.findViewById(R.id.listView1);
+        ListView lv = convertView.findViewById(R.id.listView1);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1,attachmentNames);
         lv.setAdapter(adapter);
         lv.setOnItemClickListener(new OnItemClickListener() {
@@ -430,11 +430,11 @@ public class IssueDetailFragment extends HSFragmentParent {
 					convertView = mLayoutInflater.inflate(R.layout.hs_expandable_child_issue_detail_user_reply, null);
 				}
 				
-				holder.textView1 = (TextView) convertView.findViewById(R.id.textView1);
-				holder.nameField = (TextView) convertView.findViewById(R.id.name);
-				holder.timeField = (TextView) convertView.findViewById(R.id.time);
-				holder.attachmentButton = (ImageView) convertView.findViewById(R.id.attachment_icon);
-                holder.textView_no_message = (TextView) convertView.findViewById(R.id.textView_no_message);
+				holder.textView1 = convertView.findViewById(R.id.textView1);
+				holder.nameField = convertView.findViewById(R.id.name);
+				holder.timeField = convertView.findViewById(R.id.time);
+				holder.attachmentButton = convertView.findViewById(R.id.attachment_icon);
+                holder.textView_no_message = convertView.findViewById(R.id.textView_no_message);
 				
 				convertView.setTag(holder);
 			}
@@ -592,11 +592,8 @@ public class IssueDetailFragment extends HSFragmentParent {
 			return true;
 		}
 		String file_name = attachment.getFileName();
-		if (file_name != null && isKnowFileNameType(file_name)) {
-			return true;
-		}
-		return false;
-	}
+        return file_name != null && isKnowFileNameType(file_name);
+    }
 	
 	private boolean isKnowFileNameType(String file_name) {
 		// get the type of file
@@ -609,11 +606,8 @@ public class IssueDetailFragment extends HSFragmentParent {
 			fileType = stringTokenizer.nextToken();
 		}
 		String[] knownFileType = {"png", "jpg", "jpeg"};
-		if(fileType!=null && containString(knownFileType, fileType.toLowerCase())) {
-			return true;
-		}
-		return false;
-	}
+        return fileType != null && containString(knownFileType, fileType.toLowerCase());
+    }
 	
 	private boolean containString(String[] array, String data) {
 		for (int i = 0; i < array.length; i++) {

@@ -95,10 +95,7 @@ public class HSTicketUpdate implements Serializable {
 	}
 	
 	public boolean isAttachmentEmpty() {
-		if(attachments == null || attachments.length == 0) {
-			return true;
-		}
-		return false;
-	}
+        return attachments == null || attachments.length == 0;
+    }
 	
  }

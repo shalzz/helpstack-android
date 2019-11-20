@@ -97,9 +97,9 @@ public class NewIssueFragment extends HSFragmentParent {
 
         View rootView = inflater.inflate(R.layout.hs_fragment_new_issue, container, false);
 
-        this.subjectField = (EditText) rootView.findViewById(R.id.subjectField);
-        this.messageField = (EditText) rootView.findViewById(R.id.messageField);
-        this.imageView1 = (ImageView) rootView.findViewById(R.id.imageView1);
+        this.subjectField = rootView.findViewById(R.id.subjectField);
+        this.messageField = rootView.findViewById(R.id.messageField);
+        this.imageView1 = rootView.findViewById(R.id.imageView1);
         this.imageView1.setOnClickListener(attachmentClickListener);
 
         // Read user value

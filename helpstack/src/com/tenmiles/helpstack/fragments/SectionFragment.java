@@ -76,7 +76,7 @@ public class SectionFragment extends HSFragmentParent {
 		View rootView = inflater.inflate(R.layout.hs_fragment_section, container, false);
 
 		// List View
-		mListView = (ListView)rootView.findViewById(R.id.sectionlistview);
+		mListView = rootView.findViewById(R.id.sectionlistview);
 		
 		// Report an issue
 		View report_an_issue_view = inflater.inflate(R.layout.hs_expandable_footer_report_issue, null);
@@ -124,9 +124,9 @@ public class SectionFragment extends HSFragmentParent {
 		super.onSaveInstanceState(outState);
         Gson gson = new Gson();
 		outState.putSerializable("section_array", gson.toJson(fetchedKbItems));
-	};
-	
-	@Override
+	}
+
+    @Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		super.onCreateOptionsMenu(menu, inflater);
 		
@@ -188,7 +188,7 @@ public class SectionFragment extends HSFragmentParent {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view,
 				int position, long id) {
-			HSKBItem kbItemClicked = (HSKBItem) fetchedKbItems[position];
+			HSKBItem kbItemClicked = fetchedKbItems[position];
 			articleClickedOnPosition(kbItemClicked);
 		}
 	};
@@ -245,7 +245,7 @@ public class SectionFragment extends HSFragmentParent {
 				holder = new ViewHolder();
 				LayoutInflater inflater = getActivity().getLayoutInflater();
 				convertView = inflater.inflate(R.layout.hs_sectionlist_article, null);
-				holder.title = (TextView)convertView.findViewById(R.id.sectionlisttextview);
+				holder.title = convertView.findViewById(R.id.sectionlisttextview);
 				convertView.setTag(holder);
 			}
             else {

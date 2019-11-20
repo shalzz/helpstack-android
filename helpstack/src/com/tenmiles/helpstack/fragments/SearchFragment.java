@@ -69,7 +69,7 @@ public class SearchFragment extends HSFragmentParent {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		rootView =  inflater.inflate(R.layout.hs_fragment_search, container, false);
 		setVisibility(false);
-		listView = (ListView)rootView.findViewById(R.id.searchList);
+		listView = rootView.findViewById(R.id.searchList);
 		searchAdapter = new SearchAdapter(this.allKbArticles);
 		
 		View report_an_issue_view = inflater.inflate(R.layout.hs_expandable_footer_report_issue, null);
@@ -201,7 +201,7 @@ public class SearchFragment extends HSFragmentParent {
 	}
 	
 	public interface OnReportAnIssueClickListener {
-		public void startReportAnIssue();
+		void startReportAnIssue();
 	}
 	
 	private class SearchAdapter extends BaseAdapter implements Filterable {
@@ -243,13 +243,13 @@ public class SearchFragment extends HSFragmentParent {
 				LayoutInflater inflater = getActivity().getLayoutInflater();
 				convertView = inflater.inflate(R.layout.hs_sectionlist_article, null);
 				holder = new ViewHolder();
-				holder.textview = (TextView)convertView.findViewById(R.id.sectionlisttextview);
+				holder.textview = convertView.findViewById(R.id.sectionlisttextview);
 				convertView.setTag(holder);
 			}
             else {
 				holder = (ViewHolder)convertView.getTag();
 			}
-			holder.textview.setText(((HSKBItem)this.searchResults[position]).getSubject());
+			holder.textview.setText(this.searchResults[position].getSubject());
 			return convertView;
 		}
 		
@@ -272,7 +272,7 @@ public class SearchFragment extends HSFragmentParent {
 				FilterResults results = new FilterResults();
 				if(constraint == null || constraint.length() == 0){
 					
-					results.values = (HSKBItem[])allKBItems;
+					results.values = allKBItems;
 					results.count = allKBItems.length;
 					
 				}

@@ -64,7 +64,7 @@ public class EditAttachmentActivity extends HSActivityParent {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.hs_activity_edit_attachment, savedInstanceState, R.string.hs_attachment_edit);
 
-        drawView = (DrawingView)findViewById(R.id.drawing);
+        drawView = findViewById(R.id.drawing);
         drawView.setObserver(new DrawingView.ObserverInterface() {
             @Override
             public void activateClearOption(boolean isEnabled) {
@@ -72,7 +72,7 @@ public class EditAttachmentActivity extends HSActivityParent {
             }
         });
 
-        TextView clearChanges = (TextView) findViewById(R.id.clear_change_text);
+        TextView clearChanges = findViewById(R.id.clear_change_text);
         clearChanges.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -80,13 +80,13 @@ public class EditAttachmentActivity extends HSActivityParent {
             }
         });
 
-        currentPaint = (ImageButton) findViewById(R.id.hs_red_brush);
+        currentPaint = findViewById(R.id.hs_red_brush);
         if(Build.VERSION.SDK_INT >= 16) {
             currentPaint.setBackground(getResources().getDrawable(R.drawable.paint_pressed));
         } else {
             currentPaint.setBackgroundDrawable(getResources().getDrawable(R.drawable.paint_pressed));
         }
-        clearChangesTextView = (TextView)findViewById(R.id.clear_change_text);
+        clearChangesTextView = findViewById(R.id.clear_change_text);
 
         Intent intent = new Intent();
         intent.setType("image/*");

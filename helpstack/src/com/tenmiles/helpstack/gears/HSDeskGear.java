@@ -351,11 +351,7 @@ public class HSDeskGear extends HSGear {
 
                                     content = replyObject.getString("body");
 
-                                    if (replyObject.getString("direction").equals("out")) {
-                                        isUpdateTypeUserReply = false;
-                                    } else {
-                                        isUpdateTypeUserReply = true;
-                                    }
+                                    isUpdateTypeUserReply = !replyObject.getString("direction").equals("out");
 
                                     updated_time = parseTime(replyObject.getString("updated_at"));
 

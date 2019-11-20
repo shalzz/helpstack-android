@@ -104,11 +104,11 @@ public class HomeFragment extends TaskFragment implements TaskFragment.TaskCallb
         View rootView = inflater.inflate(R.layout.hs_fragment_home, container, false);
 
         // ListView
-        mExpandableListView = (ExpandableListView) rootView.findViewById(R.id.expandableList);
+        mExpandableListView = rootView.findViewById(R.id.expandableList);
         mAdapter = new LocalAdapter(getActivity());
 
         View progress_bar_view = inflater.inflate(R.layout.hs_expandable_footer_progress_bar, null);
-        mProgressBar = (ProgressBar) progress_bar_view.findViewById(R.id.progressBar1);
+        mProgressBar = progress_bar_view.findViewById(R.id.progressBar1);
         mExpandableListView.addFooterView(progress_bar_view);
 
         // report an issue
@@ -301,7 +301,7 @@ public class HomeFragment extends TaskFragment implements TaskFragment.TaskCallb
             if (convertView == null) {
                 convertView = mLayoutInflater.inflate(R.layout.hs_expandable_child_home_default, null);
                 holder = new ChildViewHolder();
-                holder.textView1 = (TextView) convertView.findViewById(R.id.textView1);
+                holder.textView1 = convertView.findViewById(R.id.textView1);
                 convertView.setTag(holder);
             } else {
                 holder = (ChildViewHolder) convertView.getTag();
@@ -325,7 +325,7 @@ public class HomeFragment extends TaskFragment implements TaskFragment.TaskCallb
             if (convertView == null) {
                 convertView = mLayoutInflater.inflate(R.layout.hs_expandable_parent_home_default, null);
                 holder = new ParentViewHolder();
-                holder.textView1 = (TextView) convertView.findViewById(R.id.textView1);
+                holder.textView1 = convertView.findViewById(R.id.textView1);
                 convertView.setTag(holder);
             } else {
                 holder = (ParentViewHolder) convertView.getTag();

@@ -63,7 +63,7 @@ public class ImageAttachmentDisplayFragment extends HSFragmentParent {
 
         View rootView = inflater.inflate(R.layout.hs_fragment_image_attachment_display, container, false);
         progressView = rootView.findViewById(R.id.progressHolder);
-        imageView = (GestureImageView) rootView.findViewById(R.id.image);
+        imageView = rootView.findViewById(R.id.image);
 		
 		setHasOptionsMenu(true);
 		

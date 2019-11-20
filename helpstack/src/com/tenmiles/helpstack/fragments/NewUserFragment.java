@@ -72,9 +72,9 @@ public class NewUserFragment extends HSFragmentParent {
 		setHasOptionsMenu(true);
 		
 		View rootView = inflater.inflate(R.layout.hs_fragment_new_user, container, false);
-		this.firstNameField = (EditText) rootView.findViewById(R.id.firstname);
-		this.lastNameField = (EditText) rootView.findViewById(R.id.lastname);
-		this.emailField = (EditText) rootView.findViewById(R.id.email);
+		this.firstNameField = rootView.findViewById(R.id.firstname);
+		this.lastNameField = rootView.findViewById(R.id.lastname);
+		this.emailField = rootView.findViewById(R.id.email);
 
 		return rootView;
 	}

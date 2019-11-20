@@ -23,14 +23,15 @@
 package com.tenmiles.helpstack.activities;
 
 import android.os.Bundle;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 
 import com.tenmiles.helpstack.R;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 /**
  * This is base class of all Activity used in HelpStack
@@ -47,15 +48,15 @@ public class HSActivityParent extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         if(getSupportActionBar() != null)
-        outState.putString(ACTION_BAR_TITLE, getSupportActionBar().getTitle().toString());
+            outState.putString(ACTION_BAR_TITLE, getSupportActionBar().getTitle().toString());
     }
 
     protected void setContentView(int layoutResId, Bundle savedInstanceState, int title) {
         super.setContentView(R.layout.hs_activity_base);
-        mToolbar =  (Toolbar)findViewById(R.id.toolbar);
+        mToolbar = findViewById(R.id.toolbar);
 
         LayoutInflater layoutInflater = LayoutInflater.from(this);
-        LinearLayout lLayout = (LinearLayout) findViewById(R.id.lyt_base);
+        LinearLayout lLayout = findViewById(R.id.lyt_base);
         View view = layoutInflater.inflate(layoutResId, null);
 
         if(getSupportActionBar() != null){

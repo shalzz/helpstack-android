@@ -182,7 +182,7 @@ public class TaskFragment extends HSFragmentParent {
      * Callback interface through which the fragment can report the task's
      * progress and results back to the Activity.
      */
-    static interface TaskCallbacks {
+    interface TaskCallbacks {
         void onPreExecute();
 
         void onProgressUpdate(int percent);

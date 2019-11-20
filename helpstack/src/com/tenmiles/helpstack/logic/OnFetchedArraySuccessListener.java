@@ -23,5 +23,5 @@
 package com.tenmiles.helpstack.logic;
 
 public interface OnFetchedArraySuccessListener {
-	public void onSuccess(Object[] successObject);
+	void onSuccess(Object[] successObject);
 }

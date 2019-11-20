@@ -27,5 +27,5 @@ import com.tenmiles.helpstack.model.HSUser;
 
 
 public interface OnNewTicketFetchedSuccessListener {
-	public void onSuccess(HSUser udpatedUserDetail, HSTicket ticket);
+	void onSuccess(HSUser udpatedUserDetail, HSTicket ticket);
 }

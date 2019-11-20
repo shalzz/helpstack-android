@@ -48,7 +48,7 @@ public class ArticleFragment extends HSFragmentParent {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.hs_fragment_article, container, false);
 
-        webview = (WebView) rootView.findViewById(R.id.webview);
+        webview = rootView.findViewById(R.id.webview);
 
         if (savedInstanceState != null) {
             kbItem = (HSKBItem) savedInstanceState.getSerializable("kbItem");

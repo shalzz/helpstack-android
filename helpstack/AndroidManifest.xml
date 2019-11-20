@@ -12,21 +12,29 @@
         <activity
             android:name=".activities.HomeActivity"
             android:exported="false"
+            android:theme="@style/HSAppTheme"
             android:label="@string/hs_app_name"/>
         <activity
             android:name=".activities.NewIssueActivity"
+            android:theme="@style/HSAppTheme"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".activities.NewUserActivity"
+            android:theme="@style/HSAppTheme"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".activities.IssueDetailActivity"
+            android:theme="@style/HSAppTheme"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
-        <activity android:name=".activities.ArticleActivity" />
-        <activity android:name=".activities.SectionActivity" />
-        <activity android:name=".activities.ImageAttachmentDisplayActivity" />
+        <activity android:name=".activities.ArticleActivity"
+            android:theme="@style/HSAppTheme" />
+        <activity android:name=".activities.SectionActivity"
+            android:theme="@style/HSAppTheme"/>
+        <activity android:name=".activities.ImageAttachmentDisplayActivity"
+            android:theme="@style/HSAppTheme"/>
         <activity
             android:name=".activities.EditAttachmentActivity"
+            android:theme="@style/HSAppTheme"
             android:screenOrientation="portrait" />
 
         <receiver
