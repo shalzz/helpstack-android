@@ -12,12 +12,7 @@
         <activity
             android:name=".activities.HomeActivity"
             android:exported="false"
-            android:label="@string/hs_app_name">
-            <intent-filter>
-                <action android:name="com.tenmiles.helpstack.ShowHelp" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
+            android:label="@string/hs_app_name"/>
         <activity
             android:name=".activities.NewIssueActivity"
             android:windowSoftInputMode="adjustResize" />

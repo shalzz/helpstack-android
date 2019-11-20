@@ -22,9 +22,8 @@
 
 package com.tenmiles.helpstack.fragments;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.tenmiles.helpstack.activities.HSActivityParent;
 import com.tenmiles.helpstack.model.HSKBItem;

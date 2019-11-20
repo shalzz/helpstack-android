@@ -22,18 +22,15 @@
 
 package com.tenmiles.helpstack.activities;
 
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 
 import com.tenmiles.helpstack.R;
-import com.tenmiles.helpstack.gears.HSHappyfoxGear;
 
 /**
  * This is base class of all Activity used in HelpStack

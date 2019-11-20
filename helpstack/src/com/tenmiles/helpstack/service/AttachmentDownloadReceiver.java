@@ -32,7 +32,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.support.v4.app.NotificationCompat;
+import androidx.core.app.NotificationCompat;
 import com.tenmiles.helpstack.R;
 
 public class AttachmentDownloadReceiver extends BroadcastReceiver {

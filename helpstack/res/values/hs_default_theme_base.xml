@@ -4,7 +4,7 @@
     <!-- Default/Base Themes -->
     <!-- The base characteristics are defined in the default themes -->
    
-    <style name="HSAppBaseTheme" parent="Theme.AppCompat.Light">
+    <style name="HSAppBaseTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
     </style>
     
     <!-- Background default Style -->
