@@ -81,5 +81,4 @@ public class ArticleFragment extends HSFragmentParent {
         String contentText = String.format(HTML_WRAPPER_WITH_TITLE, this.kbItem.getSubject(), content);
         webview.loadData(contentText, "text/html", null);
     }
-
 }

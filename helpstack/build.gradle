@@ -16,7 +16,7 @@ dependencies {
 }
 
 group = "com.github.shalzz"
-version = "1.4.0-debug"
+version = "1.4.1-debug"
 
 android {
     compileSdkVersion 28

@@ -29,6 +29,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.tenmiles.helpstack.model.HSKBItem;
 
@@ -49,31 +50,45 @@ public class HSArticleReader {
         ArrayList<HSKBItem> articles = new ArrayList<HSKBItem>();
         XmlPullParser xpp = context.getResources().getXml(articleResourceId);
 
-		while (xpp.getEventType()!=XmlPullParser.END_DOCUMENT) {
-            if (xpp.getEventType()==XmlPullParser.START_TAG) {
-                if (xpp.getName().equals("article")) {
-                    int attributeCount = xpp.getAttributeCount();
-                    String subject = null;
-                    String text = null;
+        int eventType = xpp.getEventType();
+        String subject = null;
+        String text = null;
+        while (xpp.getEventType()!=XmlPullParser.END_DOCUMENT) {
+            String tagname = xpp.getName();
+            switch (eventType) {
+                case XmlPullParser.START_TAG:
+                    if (tagname.equalsIgnoreCase("article")) {
+                        int attributeCount = xpp.getAttributeCount();
+                        for (int i = 0; i < attributeCount; i++) {
+                            String attrName = xpp.getAttributeName(i);
+                            if (attrName.equals("subject")) {
+                                subject = xpp.getAttributeValue(i);
+                            }
+                        }
 
-                    for (int i = 0; i < attributeCount; i++) {
-                        String attrName = xpp.getAttributeName(i);
-                        if (attrName.equals("subject")) {
-                            subject = xpp.getAttributeValue(i);
-                        }
-                        if (attrName.equals("text")) {
-                            text = xpp.getAttributeValue(i);
-                        }
+                        assert subject != null : "Subject was not specified in xml for article @ index "+articles.size()+1;
                     }
+                    break;
 
-                    assert subject != null : "Subject was not specified in xml for article @ index "+articles.size()+1;
+                case XmlPullParser.TEXT:
+                    text = xpp.getText();
+                    Log.d("Parser", text);
                     assert text != null : "Text was not specified in xml for article @ index "+articles.size()+1;
-                    articles.add(new HSKBItem(null, subject, text));
-                }
+                    break;
+
+                case XmlPullParser.END_TAG:
+                    if (tagname.equalsIgnoreCase("article")) {
+                        // add employee object to list
+                        articles.add(new HSKBItem(null, subject, text));
+                    }
+                    break;
+
+                default:
+                    break;
             }
 
-            xpp.next();
-		}
+            eventType = xpp.next();
+        }
 
 		HSKBItem[] articleArray = new HSKBItem[0];
 		articleArray = articles.toArray(articleArray);
