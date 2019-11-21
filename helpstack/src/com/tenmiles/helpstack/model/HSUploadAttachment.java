@@ -25,8 +25,6 @@ package com.tenmiles.helpstack.model;
 import android.content.Context;
 import android.net.Uri;
 
-import org.apache.http.entity.mime.content.InputStreamBody;
-
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
@@ -38,18 +36,6 @@ public class HSUploadAttachment {
 	public HSUploadAttachment(Context context, HSAttachment attachment) {
 		this.mContext = context;
 		this.attachment = attachment;
-	}
-	
-	public InputStreamBody generateStreamToUpload() throws FileNotFoundException {
-        InputStream stream = generateInputStreamToUpload();
-
-        String attachmentFileName = "attachment";
-        if (attachment.getFileName()!=null) {
-            attachmentFileName = attachment.getFileName();
-        }
-
-		InputStreamBody body =  new InputStreamBody(stream, attachment.getMimeType(), attachmentFileName);
-		return body;
 	}
 
     public InputStream generateInputStreamToUpload() throws FileNotFoundException {
