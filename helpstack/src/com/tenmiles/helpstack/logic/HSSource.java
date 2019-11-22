@@ -26,6 +26,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 
@@ -233,11 +234,11 @@ public class HSSource {
     /////////////////////////////////////////////////
 
     public void launchEmailAppWithEmailAddress(Activity activity) {
-        Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
-        emailIntent.setType("plain/text");
-        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{getSupportEmailAddress()});
-        emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "");
-        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, getDeviceInformation(activity));
+        Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                "mailto", getSupportEmailAddress(), null));
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{getSupportEmailAddress()});
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "");
+        emailIntent.putExtra(Intent.EXTRA_TEXT, getDeviceInformation(activity));
 
         activity.startActivity(Intent.createChooser(emailIntent, "Email"));
     }
