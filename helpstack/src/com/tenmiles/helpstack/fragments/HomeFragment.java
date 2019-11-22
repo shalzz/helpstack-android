@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentManager;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -153,7 +155,7 @@ public class HomeFragment extends TaskFragment implements TaskFragment.TaskCallb
             }.getType());
             mSearchFragment.setKBArticleList(fetchedKbArticles);
         } else {
-            mTaskFragment.startTask(gearSource, new String[]{TaskFragment.TASK_KB_ARTICLES, TaskFragment.TASK_TICKETS});
+            mTaskFragment.startTask(gearSource, new String[]{TaskFragment.TASK_KB_ARTICLES});
         }
 
         if (mTaskFragment.isRunning()) {
@@ -199,12 +201,6 @@ public class HomeFragment extends TaskFragment implements TaskFragment.TaskCallb
         inflater.inflate(R.menu.hs_search_menu, menu);
         MenuItem searchItem = menu.findItem(R.id.search);
         mSearchFragment.addSearchViewInMenuItem(getActivity(), searchItem);
-    }
-
-    @Override
-    public void onDetach() {
-        gearSource.cancelOperation("FAQ");
-        super.onDetach();
     }
 
     private void refreshList() {
@@ -269,6 +265,7 @@ public class HomeFragment extends TaskFragment implements TaskFragment.TaskCallb
 
     @Override
     public void onPostExecute(final Object object) {
+        Log.d("HomeActivity", "Got ITTTTTTT!!!!!!!!!!");
         if (object != null) {
             getActivity().runOnUiThread(new Runnable() {
                 @Override

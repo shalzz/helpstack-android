@@ -33,7 +33,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore.Images.ImageColumns;
-import androidx.core.view.MenuItemCompat;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -45,8 +44,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.android.volley.Response.ErrorListener;
-import com.android.volley.VolleyError;
 import com.tenmiles.helpstack.HSHelpStack;
 import com.tenmiles.helpstack.R;
 import com.tenmiles.helpstack.activities.EditAttachmentActivity;
@@ -54,12 +51,13 @@ import com.tenmiles.helpstack.activities.HSActivityManager;
 import com.tenmiles.helpstack.activities.NewIssueActivity;
 import com.tenmiles.helpstack.logic.HSSource;
 import com.tenmiles.helpstack.logic.HSUtils;
-import com.tenmiles.helpstack.logic.OnNewTicketFetchedSuccessListener;
 import com.tenmiles.helpstack.model.HSAttachment;
 import com.tenmiles.helpstack.model.HSTicket;
 import com.tenmiles.helpstack.model.HSUser;
 
 import java.io.FileNotFoundException;
+
+import androidx.core.view.MenuItemCompat;
 
 public class NewIssueFragment extends HSFragmentParent {
 
@@ -205,28 +203,6 @@ public class NewIssueFragment extends HSFragmentParent {
 
             if(!gearSource.isNewUser()) {
                 getHelpStackActivity().setSupportProgressBarIndeterminateVisibility(true);
-
-                gearSource.createNewTicket("NEW_TICKET", userDetails, getSubject(), formattedBody, attachmentArray,
-                        new OnNewTicketFetchedSuccessListener() {
-
-                            @Override
-                            public void onSuccess(HSUser udpatedUserDetail, HSTicket ticket) {
-
-                                getHelpStackActivity().setSupportProgressBarIndeterminateVisibility(false);
-                                sendSuccessSignal(ticket);
-                                clearFormData();
-                                Toast.makeText(getActivity(), getResources().getString(R.string.hs_issue_created_raised), Toast.LENGTH_LONG).show();
-                            }
-
-                        }, new ErrorListener() {
-
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                HSUtils.showAlertDialog(getActivity(), getResources().getString(R.string.hs_error_reporting_issue), getResources().getString(R.string.hs_error_check_network_connection));
-                                getHelpStackActivity().setSupportProgressBarIndeterminateVisibility(false);
-                            }
-                        });
-
                 Toast.makeText(getActivity(), getResources().getString(R.string.hs_creating_issue), Toast.LENGTH_LONG).show();
             }
             else {
@@ -278,12 +254,6 @@ public class NewIssueFragment extends HSFragmentParent {
                 HSActivityManager.sendSuccessSignal(getActivity(), intent);
             }
         }
-    }
-
-    @Override
-    public void onDetach() {
-        gearSource.cancelOperation("NEW_TICKET");
-        super.onDetach();
     }
 
     private OnClickListener attachmentClickListener = new OnClickListener() {

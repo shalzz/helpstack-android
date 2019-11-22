@@ -27,13 +27,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
-import android.text.Html;
-import android.text.SpannableString;
 import android.util.Log;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.Response.ErrorListener;
-import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.tenmiles.helpstack.HSHelpStack;
 import com.tenmiles.helpstack.activities.HSActivityManager;
@@ -42,9 +37,7 @@ import com.tenmiles.helpstack.model.HSAttachment;
 import com.tenmiles.helpstack.model.HSCachedTicket;
 import com.tenmiles.helpstack.model.HSCachedUser;
 import com.tenmiles.helpstack.model.HSDraft;
-import com.tenmiles.helpstack.model.HSKBItem;
 import com.tenmiles.helpstack.model.HSTicket;
-import com.tenmiles.helpstack.model.HSTicketUpdate;
 import com.tenmiles.helpstack.model.HSUploadAttachment;
 import com.tenmiles.helpstack.model.HSUser;
 
@@ -57,9 +50,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
-import java.util.Calendar;
 
 public class HSSource {
     private static final String TAG = HSSource.class.getSimpleName();
@@ -72,14 +62,12 @@ public class HSSource {
     private static HSSource singletonInstance = null;
     private HSGear gear;
     private Context mContext;
-    private RequestQueue mRequestQueue;
     private HSCachedTicket cachedTicket;
     private HSCachedUser cachedUser;
     private HSDraft draftObject;
     private HSSource(Context context) {
         this.mContext = context;
         setGear(HSHelpStack.getInstance(context).getGear());
-        mRequestQueue = HSHelpStack.getInstance(context).getRequestQueue();
         refreshFieldsFromCache();
     }
 
@@ -127,122 +115,15 @@ public class HSSource {
         return builder.toString();
     }
 
-    public static void throwError(ErrorListener errorListener, String error) {
-        VolleyError volleyError = new VolleyError(error);
-        printErrorDescription(null, volleyError);
-        errorListener.onErrorResponse(volleyError);
-    }
-
-    private static void printErrorDescription(String methodName, VolleyError error) {
-        if (methodName == null) {
-            Log.e(HSHelpStack.LOG_TAG, "Error occurred in HelpStack");
-        } else {
-            Log.e(HSHelpStack.LOG_TAG, "Error occurred when executing " + methodName);
+    public void requestKBArticle(OnFetchedArraySuccessListener success) {
+        try {
+            HSArticleReader reader = new HSArticleReader(gear.getLocalArticleResourceId());
+            success.onSuccess(reader.readArticlesFromResource(mContext));
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
-        Log.e(HSHelpStack.LOG_TAG, error.toString());
-        if (error.getMessage() != null) {
-            Log.e(HSHelpStack.LOG_TAG, error.getMessage());
-        }
-
-        if (error.networkResponse != null && error.networkResponse.data != null) {
-            Log.e(HSHelpStack.LOG_TAG, new String(error.networkResponse.data, StandardCharsets.UTF_8));
-
-        }
-
-        error.printStackTrace();
-    }
-
-    public void requestKBArticle(String cancelTag, HSKBItem section, OnFetchedArraySuccessListener success, ErrorListener errorListener) {
-
-        if (gear.haveImplementedKBFetching()) {
-            gear.fetchKBArticle(cancelTag, section, mRequestQueue, new SuccessWrapper(success) {
-
-                @Override
-                public void onSuccess(Object[] successObject) {
-                    assert successObject != null : "It seems requestKBArticle was not implemented in gear";
-
-                    // Do your work here, may be caching, data validation etc.
-                    super.onSuccess(successObject);
-                }
-            }, new ErrorWrapper("Fetching KB articles", errorListener));
-        } else {
-            try {
-                HSArticleReader reader = new HSArticleReader(gear.getLocalArticleResourceId());
-                success.onSuccess(reader.readArticlesFromResource(mContext));
-            } catch (XmlPullParserException e) {
-                e.printStackTrace();
-                throwError(errorListener, "Unable to parse local article XML");
-            } catch (IOException e) {
-                e.printStackTrace();
-                throwError(errorListener, "Unable to read local article XML");
-            }
-        }
-    }
-
-    public void requestAllTickets(OnFetchedArraySuccessListener success, ErrorListener error) {
-        if (cachedTicket == null) {
-            success.onSuccess(new HSTicket[0]);
-        } else {
-            success.onSuccess(cachedTicket.getTickets());
-        }
-    }
-
-    public void checkForUserDetailsValidity(String cancelTag, String firstName, String lastName, String email, OnFetchedSuccessListener success, ErrorListener errorListener) {
-        gear.registerNewUser(cancelTag, firstName, lastName, email, mRequestQueue, success, new ErrorWrapper("Registering New User", errorListener));
-    }
-
-    public void createNewTicket(String cancelTag, HSUser user, String subject, String message, HSAttachment[] attachment, OnNewTicketFetchedSuccessListener successListener, ErrorListener errorListener) {
-
-        HSUploadAttachment[] upload_attachments = convertAttachmentArrayToUploadAttachment(attachment);
-        message = message + getDeviceInformation(mContext);
-
-        if (gear.canUploadMessageAsHtmlString()) {
-            message = Html.toHtml(new SpannableString(message));
-        }
-
-        gear.createNewTicket(cancelTag, user, subject, message, upload_attachments, mRequestQueue, new NewTicketSuccessWrapper(successListener) {
-
-            @Override
-            public void onSuccess(HSUser udpatedUserDetail, HSTicket ticket) {
-
-                // Save ticket and user details in cache
-                // Save properties also later.
-                doSaveNewTicketPropertiesForGearInCache(ticket);
-                doSaveNewUserPropertiesForGearInCache(udpatedUserDetail);
-                super.onSuccess(udpatedUserDetail, ticket);
-            }
-        }, new ErrorWrapper("Creating New Ticket", errorListener));
-
-    }
-
-    public void requestAllUpdatesOnTicket(String cancelTag, HSTicket ticket, OnFetchedArraySuccessListener success, ErrorListener errorListener) {
-        gear.fetchAllUpdateOnTicket(cancelTag, ticket, cachedUser.getUser(), mRequestQueue, success, new ErrorWrapper("Fetching updates on Ticket", errorListener));
-    }
-
-    public void addReplyOnATicket(String cancelTag, String message, HSAttachment[] attachments, HSTicket ticket, OnFetchedSuccessListener success, ErrorListener errorListener) {
-
-        if (gear.canUploadMessageAsHtmlString()) {
-            message = Html.toHtml(new SpannableString(message));
-        }
-
-        gear.addReplyOnATicket(cancelTag, message, convertAttachmentArrayToUploadAttachment(attachments), ticket, getUser(), mRequestQueue, new OnFetchedSuccessListenerWrapper(success, message, attachments) {
-
-            @Override
-            public void onSuccess(Object successObject) {
-
-                if (gear.canIgnoreTicketUpdateInformationAfterAddingReply()) {
-                    HSTicketUpdate update = HSTicketUpdate.createUpdateByUser(null, null, this.message, Calendar.getInstance().getTime(), this.attachments);
-                    super.onSuccess(update);
-                } else {
-                    super.onSuccess(successObject);
-                }
-            }
-        }, new ErrorWrapper("Adding reply to a ticket", errorListener));
-    }
-
-    public HSGear getGear() {
-        return gear;
     }
 
     private void setGear(HSGear gear) {
@@ -359,10 +240,6 @@ public class HSSource {
         emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, getDeviceInformation(activity));
 
         activity.startActivity(Intent.createChooser(emailIntent, "Email"));
-    }
-
-    public void cancelOperation(String cancelTag) {
-        mRequestQueue.cancelAll(cancelTag);
     }
 
     public void refreshFieldsFromCache() {
@@ -586,43 +463,6 @@ public class HSSource {
         public void onSuccess(Object[] successObject) {
             if (lastListener != null)
                 lastListener.onSuccess(successObject);
-        }
-    }
-
-    private class OnFetchedSuccessListenerWrapper implements OnFetchedSuccessListener {
-
-        protected String message;
-        protected HSAttachment[] attachments;
-        private OnFetchedSuccessListener listener;
-
-        private OnFetchedSuccessListenerWrapper(OnFetchedSuccessListener listener, String message, HSAttachment[] attachments) {
-            this.listener = listener;
-            this.message = message;
-            this.attachments = attachments;
-        }
-
-        @Override
-        public void onSuccess(Object successObject) {
-            if (this.listener != null) {
-                this.listener.onSuccess(successObject);
-            }
-        }
-    }
-
-    private class ErrorWrapper implements ErrorListener {
-
-        private ErrorListener errorListener;
-        private String methodName;
-
-        public ErrorWrapper(String methodName, ErrorListener errorListener) {
-            this.errorListener = errorListener;
-            this.methodName = methodName;
-        }
-
-        @Override
-        public void onErrorResponse(VolleyError error) {
-            printErrorDescription(methodName, error);
-            this.errorListener.onErrorResponse(error);
         }
     }
 }

@@ -22,15 +22,6 @@
 
 package com.tenmiles.helpstack.logic;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.Response.ErrorListener;
-import com.android.volley.VolleyError;
-import com.tenmiles.helpstack.model.HSKBItem;
-import com.tenmiles.helpstack.model.HSTicket;
-import com.tenmiles.helpstack.model.HSUploadAttachment;
-import com.tenmiles.helpstack.model.HSUser;
-
-
 /**
  * @author Nalin Chhajer
  *
@@ -38,72 +29,6 @@ import com.tenmiles.helpstack.model.HSUser;
 public abstract class HSGear {
 	
 	public HSGear() {
-	}
-	
-	/**
-     *
-     * @param cancelTag Cancel Tag
-     * @param section Section
-     * @param queue Queue
-     * @param success Success listener
-     * @param errorListener Error listener
-     */
-	public void fetchKBArticle(String cancelTag, HSKBItem section, RequestQueue queue,  OnFetchedArraySuccessListener success, ErrorListener errorListener ) {
-		errorListener.onErrorResponse(new VolleyError("Not implemented method"));
-	}
-
-    /**
-     *
-     * @param cancelTag Cancel Tag
-     * @param firstName First Name
-     * @param lastname Last Name
-     * @param emailAddress Email Address
-     * @param queue Queue
-     * @param success Success Listener
-     * @param errorListener Error Listener
-     */
-	public void registerNewUser(String cancelTag, String firstName, String lastname, String emailAddress, RequestQueue queue, OnFetchedSuccessListener success, ErrorListener errorListener) {
-		success.onSuccess(HSUser.createNewUserWithDetails(firstName, lastname, emailAddress));
-	}
-	
-	/**
-	 *
-     * HSUploadAttachment.getAttachment() can contain mime/Type and filename
-	 * 
-	 * @param user User
-	 * @param subject Subject
-	 * @param body Body
-	 * @param successListener Success Listener
-	 * @param errorListener Error Listener
-	 */
-	public void createNewTicket(String cancelTag, HSUser user, String subject, String body, HSUploadAttachment[] attachments, RequestQueue queue, OnNewTicketFetchedSuccessListener successListener, ErrorListener errorListener) {
-		errorListener.onErrorResponse(new VolleyError("Not implemented method"));
-	}
-
-    /**
-     *
-     * @param cancelTag Cancel Tag
-     * @param ticket Ticket
-     * @param user User
-     * @param queue Queue
-     * @param success Success Listener
-     * @param errorListener Error Listener
-     */
-	public void fetchAllUpdateOnTicket(String cancelTag, HSTicket ticket, HSUser user, RequestQueue queue, OnFetchedArraySuccessListener success, ErrorListener errorListener) {
-		errorListener.onErrorResponse(new VolleyError("Not implemented method"));
-	}
-	
-	/***
-	 * 
-	 * @param message Message
-	 * @param ticket Ticket
-	 * @param user User
-	 * @param queue Queue
-	 * @param success Success Listener
-	 * @param errorListener Error Listener
-	 */
-	public void addReplyOnATicket(String cancelTag, String message, HSUploadAttachment[] attachments, HSTicket ticket, HSUser user, RequestQueue queue, OnFetchedSuccessListener success, ErrorListener errorListener) {
-		errorListener.onErrorResponse(new VolleyError("Not implemented method"));
 	}
 
     /**
@@ -135,6 +60,7 @@ public abstract class HSGear {
     public boolean haveImplementedTicketFetching() {
         return implementsTicketFetching;
     }
+
     /**
      * Set this parameter, if gear is not implementing handling of FAQ. Doing this, FAQ will be fetched from article path.
      * Then there is no need to implement issues fetching related methods.
@@ -144,7 +70,6 @@ public abstract class HSGear {
      * @param articleResid Article Resource ID
      */
 	public void setNotImplementingKBFetching (int articleResid) {
-		implementsKBFetching = false;
 		this.articleResid = articleResid;
 	}
 
@@ -157,50 +82,6 @@ public abstract class HSGear {
     }
 
     /**
-     * Returns if gear have implemented KB Fetching. Modify this parameter using {@link #setNotImplementingKBFetching(int) setNotImplementingKBFetching}
-     *
-     * Default:  true
-     *
-     */
-    public boolean haveImplementedKBFetching() {
-        return implementsKBFetching;
-    }
-
-    /**
-     *
-     * If this parameter is set, message written by user in chat screen and new issue screen will be returned in HTML format.
-     *
-     * Default:  false
-     *
-     * @param htmlEnabled HTML Enabled
-     */
-	public void uploadMessageAsHtmlString(boolean htmlEnabled) {
-		this.supportHtmlMessage = htmlEnabled;
-	}
-
-    /**
-     * returns if gear can upload message as html string.
-     *
-     * Default:  false
-     *
-     */
-	public boolean canUploadMessageAsHtmlString() {
-		return supportHtmlMessage;
-	}
-
-    /**
-     *
-     * Sets maximum number of attachment gears can handle.
-     *
-     * Default:  1
-     *
-     * @param numberOfAttachmentGearCanHandle Number of Attachments that the Gear can handle
-     */
-	public void setNumberOfAttachmentGearCanHandle (int numberOfAttachmentGearCanHandle) {
-		this.numberOfAttachmentGearCanHandle = numberOfAttachmentGearCanHandle;
-	}
-
-    /**
      *
      * @return maximum number of attachment gear can handle.
      * Default:  is 1
@@ -208,28 +89,6 @@ public abstract class HSGear {
 	public int getNumberOfAttachmentGearCanHandle() {
 		return numberOfAttachmentGearCanHandle;
 	}
-
-
-    /**
-     * if true, gear don't have to return back HSTicketUpdate object, after a reply is been added.
-     *
-     * Default: false, means it is necessary for the gear to return HSTicketUpdate object, after a reply is been added.
-     *
-     * @param canIgnore Can Ignore
-     */
-    public void ignoreTicketUpdateInformationAfterAddingReply(boolean canIgnore) {
-        this.ignoreTicketUpdateInformationAfterAddingReply = canIgnore;
-    }
-
-    /**
-     *
-     * @return if the HSTicketUpdate object, after a reply is added should be used in UI.
-     *
-     */
-    public boolean canIgnoreTicketUpdateInformationAfterAddingReply() {
-        return this.ignoreTicketUpdateInformationAfterAddingReply;
-    }
-
 
     ////////////////////////////////////////////////////
     /////////////   Private Variables   ///////////////
@@ -240,13 +99,7 @@ public abstract class HSGear {
 	// If this is true, we don't call kb article functions, will open email app is required.
 	private boolean implementsTicketFetching = true;
 	
-	private boolean implementsKBFetching = true;
-	
 	private int articleResid;
 	
 	private String companySupportEmailAddress;
-	
-	private boolean supportHtmlMessage = false;
-
-    private boolean ignoreTicketUpdateInformationAfterAddingReply = false;
 }

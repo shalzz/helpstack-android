@@ -37,14 +37,11 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.android.volley.Response.ErrorListener;
-import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.tenmiles.helpstack.R;
 import com.tenmiles.helpstack.activities.HSActivityManager;
 import com.tenmiles.helpstack.fragments.SearchFragment.OnReportAnIssueClickListener;
 import com.tenmiles.helpstack.logic.HSSource;
-import com.tenmiles.helpstack.logic.HSUtils;
 import com.tenmiles.helpstack.logic.OnFetchedArraySuccessListener;
 import com.tenmiles.helpstack.model.HSKBItem;
 
@@ -137,16 +134,10 @@ public class SectionFragment extends HSFragmentParent {
         mSearchFragment.addSearchViewInMenuItem(getActivity(), searchItem);
 	}
 	
-	@Override
-	public void onDetach() {
-		super.onDetach();
-		gearSource.cancelOperation("SECTION_FAQ");
-	}
-	
 	private void initializeView() {
         getHelpStackActivity().setProgressBarIndeterminateVisibility(true);
 		
-		gearSource.requestKBArticle("SECTION_FAQ", this.sectionItemToDisplay, new OnFetchedArraySuccessListener() {
+		gearSource.requestKBArticle(new OnFetchedArraySuccessListener() {
 			
 			@Override
 			public void onSuccess(Object[] successObject) {
@@ -156,12 +147,6 @@ public class SectionFragment extends HSFragmentParent {
 				refreshList();
 				getHelpStackActivity().setProgressBarIndeterminateVisibility(false);
 				
-			}
-		}, new ErrorListener() {
-
-			@Override
-			public void onErrorResponse(VolleyError error) {
-				HSUtils.showAlertDialog(getActivity(), getResources().getString(R.string.hs_error), getResources().getString(R.string.hs_error_fetching_articles));
 			}
 		});
 	}

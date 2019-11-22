@@ -22,9 +22,7 @@
 
 package com.tenmiles.helpstack.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
-import androidx.core.view.MenuItemCompat;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,23 +32,19 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.android.volley.Response.ErrorListener;
-import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.tenmiles.helpstack.R;
-import com.tenmiles.helpstack.activities.HSActivityManager;
 import com.tenmiles.helpstack.activities.NewIssueActivity;
 import com.tenmiles.helpstack.logic.HSSource;
 import com.tenmiles.helpstack.logic.HSUtils;
-import com.tenmiles.helpstack.logic.OnFetchedSuccessListener;
-import com.tenmiles.helpstack.logic.OnNewTicketFetchedSuccessListener;
 import com.tenmiles.helpstack.model.HSAttachment;
-import com.tenmiles.helpstack.model.HSTicket;
 import com.tenmiles.helpstack.model.HSUser;
+
+import androidx.annotation.NonNull;
+import androidx.core.view.MenuItemCompat;
 
 public class NewUserFragment extends HSFragmentParent {
 
-    private static final String RESULT_TICKET = NewIssueActivity.RESULT_TICKET;
     private static final String EXTRAS_SUBJECT = NewIssueFragment.EXTRAS_SUBJECT;
     private static final String EXTRAS_MESSAGE = NewIssueFragment.EXTRAS_MESSAGE;
     private static final String EXTRAS_ATTACHMENT = NewIssueFragment.EXTRAS_ATTACHMENT;
@@ -80,7 +74,7 @@ public class NewUserFragment extends HSFragmentParent {
 	}
 	
 	@Override
-	public void onSaveInstanceState(Bundle outState) {
+	public void onSaveInstanceState(@NonNull Bundle outState) {
 		super.onSaveInstanceState(outState);
 
 		outState.putString(EXTRAS_FIRST_NAME, firstNameField.getText().toString());
@@ -173,53 +167,12 @@ public class NewUserFragment extends HSFragmentParent {
 
             getHelpStackActivity().setSupportProgressBarIndeterminateVisibility(true);
 
-			gearSource.checkForUserDetailsValidity("NEW_USER", getFirstName(), getLastName(),
-                    getEmailAdddress(), new OnFetchedSuccessListener() {
-
-                        @Override
-                        public void onSuccess(Object successObject) {
-                            String formattedBody = message;
-
-                            gearSource.createNewTicket("NEW_TICKET", (HSUser) successObject, subject, formattedBody, attachmentArray,
-                                    new OnNewTicketFetchedSuccessListener() {
-
-                                        @Override
-                                        public void onSuccess(HSUser udpatedUserDetail, HSTicket ticket) {
-                                            getHelpStackActivity().setSupportProgressBarIndeterminateVisibility(false);
-                                            sendSuccessSignal(ticket);
-                                            gearSource.clearTicketDraft();
-                                            Toast.makeText(getActivity(), getResources().getString(R.string.hs_issue_created_raised), Toast.LENGTH_LONG).show();
-                                        }
-
-                                    }, new ErrorListener() {
-
-                                        @Override
-                                        public void onErrorResponse(VolleyError error) {
-                                            HSUtils.showAlertDialog(getActivity(), getResources().getString(R.string.hs_error_reporting_issue), getResources().getString(R.string.hs_error_check_network_connection));
-                                            getHelpStackActivity().setSupportProgressBarIndeterminateVisibility(false);
-                                        }
-                                    });
-                        }
-                    }, new ErrorListener() {
-
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            getHelpStackActivity().setSupportProgressBarIndeterminateVisibility(false);
-                        }
-                    });
-
             Toast.makeText(getActivity(), getResources().getString(R.string.hs_creating_issue), Toast.LENGTH_LONG).show();
 			
 			return true;
 		}
 
 		return super.onOptionsItemSelected(item);
-	}
-
-    @Override
-	public void onDetach() {
-		gearSource.cancelOperation("NEW_USER");
-		super.onDetach();
 	}
 
 	public String getFirstName() {
@@ -234,9 +187,4 @@ public class NewUserFragment extends HSFragmentParent {
 		return emailField.getText().toString();
 	}
 
-    public void sendSuccessSignal(HSTicket ticket) {
-        Intent intent = new Intent();
-        intent.putExtra(RESULT_TICKET, ticket);
-        HSActivityManager.sendSuccessSignal(getActivity(), intent);
-    }
 }

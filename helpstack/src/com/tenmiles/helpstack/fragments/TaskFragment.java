@@ -1,19 +1,11 @@
 package com.tenmiles.helpstack.fragments;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
 import android.util.Log;
 
-import com.android.volley.NoConnectionError;
-import com.android.volley.Response;
-import com.android.volley.TimeoutError;
-import com.android.volley.VolleyError;
-import com.tenmiles.helpstack.R;
 import com.tenmiles.helpstack.activities.HSActivityParent;
 import com.tenmiles.helpstack.logic.HSSource;
 import com.tenmiles.helpstack.logic.OnFetchedArraySuccessListener;
@@ -25,22 +17,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Created by Sureshkumar on 24/12/16.
- */
+import androidx.annotation.Nullable;
 
-
-/**
- * TaskFragment manages a single background task and retains itself across
- * configuration changes.
- * <p>
- * ref: http://www.vogella.com/tutorials/AndroidFragments/article.html#headless-fragments
- */
-@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class TaskFragment extends HSFragmentParent {
 
-    protected static final String TASK_TICKETS = "task_tickets";
-    protected static final String TASK_KB_ARTICLES = "task_kb_articles";
+    static final String TASK_KB_ARTICLES = "task_kb_articles";
 
     private Activity mActivity;
     private List<String> mTasks;
@@ -99,7 +80,7 @@ public class TaskFragment extends HSFragmentParent {
     /**
      * Start the background task.
      */
-    public void startTask(HSSource gearSource, String[] tasks) {
+    void startTask(HSSource gearSource, String[] tasks) {
         if (!mRunning) {
             mGearSource = gearSource;
             mTasks = new ArrayList<>(Arrays.asList(tasks));
@@ -113,7 +94,7 @@ public class TaskFragment extends HSFragmentParent {
     /**
      * Cancel the background task.
      */
-    public void cancelTask() {
+    private void cancelTask() {
         if (mRunning) {
             mGearSource = null;
             mTask.cancel(false);
@@ -125,57 +106,19 @@ public class TaskFragment extends HSFragmentParent {
     /**
      * Returns the current state of the background task.
      */
-    public boolean isRunning() {
+    boolean isRunning() {
         return mRunning;
     }
 
     private void fetchKbArticles(final Task task) {
-        mGearSource.requestKBArticle("FAQ", null, new OnFetchedArraySuccessListener() {
+        mGearSource.requestKBArticle(new OnFetchedArraySuccessListener() {
             @Override
             public void onSuccess(Object[] kbArticles) {
                 mResponse.kbArticles = (HSKBItem[]) kbArticles;
                 mTasks.remove(TASK_KB_ARTICLES);
                 task.onPostExecute(mResponse);
             }
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                task.onPostExecute(handleError(mActivity, error));
-            }
         });
-    }
-
-    private void fetchTickets(final Task task) {
-        mGearSource.requestAllTickets(new OnFetchedArraySuccessListener() {
-            @Override
-            public void onSuccess(Object[] tickets) {
-                mResponse.tickets = (HSTicket[]) tickets;
-                mTasks.remove(TASK_TICKETS);
-                task.onPostExecute(mResponse);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                task.onPostExecute(handleError(mActivity, error));
-            }
-        });
-    }
-
-    private HSError handleError(Context context, VolleyError error) {
-        HSError hsError = new HSError();
-        String message = "";
-        if ((error instanceof NoConnectionError) || (error instanceof TimeoutError)) {
-            hsError.initWithNetworkError(context.getResources().getString(R.string.hs_error_check_network_connection));
-            message = context.getResources().getString(R.string.hs_error_check_network_connection);
-        } else {
-            hsError.initWithAppError(context.getResources().getString(R.string.hs_error_fetching_articles_issues));
-            message = context.getResources().getString(R.string.hs_error_fetching_articles_issues);
-        }
-        hsError.message = message;
-        if(error.networkResponse != null)
-            hsError.httpResponseCode = error.networkResponse.statusCode;
-        return hsError;
     }
 
     /**
@@ -203,12 +146,10 @@ public class TaskFragment extends HSFragmentParent {
 
         @Override
         protected Object doInBackground(String... params) {
-            for (int i = 0; i < params.length; i++) {
-                Log.d("Loading task", params[i]);
-                if (params[i].equals(TASK_KB_ARTICLES)) {
+            for (String param : params) {
+                Log.d("Loading task", param);
+                if (param.equals(TASK_KB_ARTICLES)) {
                     fetchKbArticles(this);
-                } else if (params[i].equals(TASK_TICKETS)) {
-                    fetchTickets(this);
                 }
             }
             return null;
@@ -251,9 +192,8 @@ public class TaskFragment extends HSFragmentParent {
         }
     }
 
-    class TaskResponse {
+    static class TaskResponse {
         HSKBItem[] kbArticles;
         HSTicket[] tickets;
     }
-
 }

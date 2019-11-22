@@ -72,7 +72,6 @@ public class HSArticleReader {
 
                 case XmlPullParser.TEXT:
                     text = xpp.getText();
-                    Log.d("Parser", text);
                     assert text != null : "Text was not specified in xml for article @ index "+articles.size()+1;
                     break;
 

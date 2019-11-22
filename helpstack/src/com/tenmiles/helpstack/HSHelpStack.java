@@ -27,8 +27,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 import com.tenmiles.helpstack.activities.HomeActivity;
 import com.tenmiles.helpstack.logic.HSGear;
 import com.tenmiles.helpstack.logic.HSSource;
@@ -127,16 +125,6 @@ public class HSHelpStack {
         HSSource source = HSSource.getInstance(context);
         source.deleteAllFiles();
     }
-
-    /**
-     *
-     *
-     *
-     * @return RequestQueue object which was created during initialization. It is used by all the activity to store and perform network operation.
-     */
-	public RequestQueue getRequestQueue() {
-		return mRequestQueue;
-	}
 	
 
     ////////////////////////////////////////////////////
@@ -147,7 +135,6 @@ public class HSHelpStack {
     private Context mContext;
 
     private HSGear gear;
-    private RequestQueue mRequestQueue;
     private boolean showCredits;
 
     private HSHelpStack(Context context) {
@@ -156,7 +143,6 @@ public class HSHelpStack {
     }
 
     private void init(Context context) {
-        mRequestQueue = Volley.newRequestQueue(context);
         this.setShowCredits(true);
     }
 }

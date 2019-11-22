@@ -48,8 +48,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.android.volley.Response.ErrorListener;
-import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.tenmiles.helpstack.R;
 import com.tenmiles.helpstack.activities.EditAttachmentActivity;
@@ -58,8 +56,6 @@ import com.tenmiles.helpstack.helper.HSBaseExpandableListAdapter;
 import com.tenmiles.helpstack.helper.HSBaseExpandableListAdapter.OnChildItemClickListener;
 import com.tenmiles.helpstack.logic.HSSource;
 import com.tenmiles.helpstack.logic.HSUtils;
-import com.tenmiles.helpstack.logic.OnFetchedArraySuccessListener;
-import com.tenmiles.helpstack.logic.OnFetchedSuccessListener;
 import com.tenmiles.helpstack.model.HSAttachment;
 import com.tenmiles.helpstack.model.HSTicket;
 import com.tenmiles.helpstack.model.HSTicketUpdate;
@@ -67,7 +63,6 @@ import com.tenmiles.helpstack.service.DownloadAttachmentUtility;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.StringTokenizer;
@@ -126,27 +121,15 @@ public class IssueDetailFragment extends HSFragmentParent {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		
-		if (savedInstanceState == null ) {
-			refreshUpdateFromServer();
-		}
-		else {
-            Gson gson = new Gson();
-            fetchedUpdates  = gson.fromJson(savedInstanceState.getString("updates"), HSTicketUpdate[].class);
-			ticket = (HSTicket) savedInstanceState.getSerializable("ticket");
-			selectedAttachment = (HSAttachment) savedInstanceState.getSerializable("selectedAttachment");
-			replyEditTextView.setText(savedInstanceState.getString("replyEditTextView"));
 
-			refreshList();
-			resetAttachmentImage();
-			
-			if (fetchedUpdates == null) {
-				// may be due to orientation change during last fetch operation
-				refreshUpdateFromServer();
-			}
-		}
-		
-		refreshList();
+        Gson gson = new Gson();
+        fetchedUpdates  = gson.fromJson(savedInstanceState.getString("updates"), HSTicketUpdate[].class);
+        ticket = (HSTicket) savedInstanceState.getSerializable("ticket");
+        selectedAttachment = (HSAttachment) savedInstanceState.getSerializable("selectedAttachment");
+        replyEditTextView.setText(savedInstanceState.getString("replyEditTextView"));
+
+        refreshList();
+        resetAttachmentImage();
 	}
 
 	@Override
@@ -199,36 +182,6 @@ public class IssueDetailFragment extends HSFragmentParent {
         }
 	}
 
-    @Override
-	public void onDetach() {
-		gearSource.cancelOperation("REPLY_TO_A_TICKET");
-		gearSource.cancelOperation("ALL_UPDATES");
-		super.onDetach();
-	}
-	
-	private void refreshUpdateFromServer() {
-		getHelpStackActivity().setProgressBarIndeterminateVisibility(true);
-		
-		gearSource.requestAllUpdatesOnTicket("ALL_UPDATES", ticket, new OnFetchedArraySuccessListener() {
-			
-			@Override
-			public void onSuccess(Object[] successObject) {
-				fetchedUpdates = (HSTicketUpdate[]) successObject;
-				refreshList();
-				
-				getHelpStackActivity().setProgressBarIndeterminateVisibility(false);
-				scrollListToBottom();
-			}
-		}, new ErrorListener() {
-
-			@Override
-			public void onErrorResponse(VolleyError error) {
-				HSUtils.showAlertDialog(getActivity(), getResources().getString(R.string.hs_error), getResources().getString(R.string.hs_error_fetching_ticket_updates));
-				getHelpStackActivity().setProgressBarIndeterminateVisibility(false);
-			}
-		});
-	}
-	
 	private OnChildItemClickListener listChildClickListener = new OnChildItemClickListener() {
 		
 		@Override
@@ -305,48 +258,6 @@ public class IssueDetailFragment extends HSFragmentParent {
 			
 			InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(replyEditTextView.getWindowToken(), 0);
-				
-			gearSource.addReplyOnATicket("REPLY_TO_A_TICKET", message, attachmentArray, ticket, new OnFetchedSuccessListener() {
-				
-				@Override
-				public void onSuccess(Object successObject) {
-                    clearFormData();
-                    
-					sendButton.setEnabled(true);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                        sendButton.setAlpha((float)1.0);
-                    }
-                    HSTicketUpdate update = (HSTicketUpdate) successObject;
-					
-					ArrayList<HSTicketUpdate> updateList = new ArrayList<HSTicketUpdate>();
-					updateList.addAll(Arrays.asList(fetchedUpdates));
-					updateList.add(update);
-					
-					HSTicketUpdate[] updateArray = new HSTicketUpdate[0];
-					fetchedUpdates = updateList.toArray(updateArray);
-					
-					refreshList();
-					
-					selectedAttachment = null;
-					replyEditTextView.setText("");
-					resetAttachmentImage();
-
-					getHelpStackActivity().setProgressBarIndeterminateVisibility(false);
-					
-					scrollListToBottom();
-				}
-			}, new ErrorListener() {
-
-				@Override
-				public void onErrorResponse(VolleyError error) {
-					HSUtils.showAlertDialog(getActivity(), getResources().getString(R.string.hs_error), getResources().getString(R.string.hs_error_posting_reply));
-					sendButton.setEnabled(true);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                        sendButton.setAlpha((float)1.0);
-                    }
-                    getHelpStackActivity().setProgressBarIndeterminateVisibility(false);
-				}
-			});
 		}
 	};
 
