@@ -6,7 +6,6 @@
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application>
         <activity
@@ -34,8 +33,7 @@
             android:theme="@style/HSAppTheme"/>
         <activity
             android:name=".activities.EditAttachmentActivity"
-            android:theme="@style/HSAppTheme"
-            android:screenOrientation="portrait" />
+            android:theme="@style/HSAppTheme" />
 
         <receiver
             android:name=".service.AttachmentDownloadReceiver"
