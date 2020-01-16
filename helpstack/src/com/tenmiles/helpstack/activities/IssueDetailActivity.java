@@ -27,28 +27,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.tenmiles.helpstack.R;
-import com.tenmiles.helpstack.fragments.HSFragmentManager;
-import com.tenmiles.helpstack.fragments.IssueDetailFragment;
-import com.tenmiles.helpstack.model.HSTicket;
 
 public class IssueDetailActivity extends HSActivityParent {
-    private static final String TAG = IssueDetailActivity.class.getSimpleName();
-
 	public static final String EXTRAS_TICKET = "ticket";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.hs_activity_issue_detail, savedInstanceState, 0);
-
-		if (savedInstanceState == null) {
-			IssueDetailFragment mIssueDetailFragment = HSFragmentManager.getIssueDetailFragment();
-
-            HSFragmentManager.putFragmentInActivity(this, R.id.container, mIssueDetailFragment, TAG);
-			HSTicket ticket = (HSTicket)getIntent().getExtras().getSerializable(EXTRAS_TICKET);
-			mIssueDetailFragment.setTicket(ticket);
-			getSupportActionBar().setTitle(ticket.getSubject());
-		}
 	}
 
 	@Override

@@ -26,12 +26,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
-import com.google.gson.Gson;
 import com.tenmiles.helpstack.fragments.HSFragmentParent;
-import com.tenmiles.helpstack.model.HSAttachment;
 import com.tenmiles.helpstack.model.HSKBItem;
 import com.tenmiles.helpstack.model.HSTicket;
-import com.tenmiles.helpstack.model.HSUser;
 
 /**
  * 
@@ -50,36 +47,9 @@ public class HSActivityManager {
 		context.startActivity(intent);
 	}
 	
-	public static void startNewIssueActivity(HSFragmentParent context, HSUser user, int requestCode) {
-		Intent intent = new Intent(context.getActivity(), NewIssueActivity.class);
-        if(user != null) {
-            intent.putExtra(NewIssueActivity.EXTRAS_USER, user);
-        }
-		context.startActivityForResult(intent, requestCode);
-	}
-
-	public static void startSectionActivity(HSFragmentParent context, HSKBItem kbItem, int requestCode) {
-		Intent intent = new Intent(context.getActivity(), SectionActivity.class);
-		intent.putExtra(SectionActivity.EXTRAS_SECTION_ITEM, kbItem);
-		context.startActivityForResult(intent, requestCode);
-	}
-	
 	public static void startArticleActivity(HSFragmentParent context, HSKBItem kbItem, int requestCode) {
 		Intent intent = new Intent(context.getActivity(), ArticleActivity.class);
 		intent.putExtra(ArticleActivity.EXTRAS_ARTICLE_ITEM, kbItem);
-		context.startActivityForResult(intent, requestCode);
-	}
-
-	public static void startNewUserActivity(HSFragmentParent context, int requestCode, String subject, String message, HSAttachment[] attachmentArray) {
-		Intent intent = new Intent(context.getActivity(), NewUserActivity.class);
-        intent.putExtra(NewIssueActivity.EXTRAS_SUBJECT, subject);
-        intent.putExtra(NewIssueActivity.EXTRAS_MESSAGE, message);
-
-        if (attachmentArray != null) {
-        	Gson json = new Gson();
-        	intent.putExtra(NewIssueActivity.EXTRAS_ATTACHMENT, json.toJson(attachmentArray));
-        }
-        
 		context.startActivityForResult(intent, requestCode);
 	}
 	

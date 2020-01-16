@@ -1,6 +1,5 @@
 package com.tenmiles.helpstack.fragments;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -23,10 +22,8 @@ public class TaskFragment extends HSFragmentParent {
 
     static final String TASK_KB_ARTICLES = "task_kb_articles";
 
-    private Activity mActivity;
     private List<String> mTasks;
     private Task mTask;
-    private TaskResponse mResponse;
     private TaskCallbacks mCallbacks;
     private boolean mRunning;
     private boolean isFailed;
@@ -86,7 +83,6 @@ public class TaskFragment extends HSFragmentParent {
             mTasks = new ArrayList<>(Arrays.asList(tasks));
             mTask = new Task();
             mTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, tasks);
-            mResponse = new TaskResponse();
             mRunning = true;
         }
     }
@@ -110,13 +106,13 @@ public class TaskFragment extends HSFragmentParent {
         return mRunning;
     }
 
-    private void fetchKbArticles(final Task task) {
+    private void fetchKbArticles(final Task task, final TaskResponse response) {
         mGearSource.requestKBArticle(new OnFetchedArraySuccessListener() {
             @Override
             public void onSuccess(Object[] kbArticles) {
-                mResponse.kbArticles = (HSKBItem[]) kbArticles;
+                response.kbArticles = (HSKBItem[]) kbArticles;
                 mTasks.remove(TASK_KB_ARTICLES);
-                task.onPostExecute(mResponse);
+                task.onPostExecute(response);
             }
         });
     }
@@ -136,6 +132,9 @@ public class TaskFragment extends HSFragmentParent {
     }
 
     private class Task extends AsyncTask<String, Integer, Object> {
+
+        private TaskResponse mResponse = new TaskResponse();
+
         @Override
         protected void onPreExecute() {
             // Proxy the call to the Activity.
@@ -149,7 +148,7 @@ public class TaskFragment extends HSFragmentParent {
             for (String param : params) {
                 Log.d("Loading task", param);
                 if (param.equals(TASK_KB_ARTICLES)) {
-                    fetchKbArticles(this);
+                    fetchKbArticles(this, mResponse);
                 }
             }
             return null;

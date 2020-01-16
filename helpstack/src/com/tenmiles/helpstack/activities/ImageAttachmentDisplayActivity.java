@@ -26,8 +26,6 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.tenmiles.helpstack.R;
-import com.tenmiles.helpstack.fragments.HSFragmentManager;
-import com.tenmiles.helpstack.fragments.ImageAttachmentDisplayFragment;
 
 public class ImageAttachmentDisplayActivity extends HSActivityParent {
 
@@ -43,8 +41,6 @@ public class ImageAttachmentDisplayActivity extends HSActivityParent {
 			String url = getIntent().getExtras().getString(EXTRAS_STRING_URL);
 			String title = getIntent().getExtras().getString(EXTRAS_TITLE);
 			getSupportActionBar().setTitle(title);
-            ImageAttachmentDisplayFragment fragment = HSFragmentManager.getImageAttachmentDisplayFragment(this, url);
-            getSupportFragmentManager().beginTransaction().add(R.id.container, fragment).commit();
 		}
 	}
 

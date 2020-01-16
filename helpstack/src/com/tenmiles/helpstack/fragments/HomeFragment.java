@@ -1,11 +1,7 @@
 package com.tenmiles.helpstack.fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentManager;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,7 +19,6 @@ import com.google.gson.reflect.TypeToken;
 import com.tenmiles.helpstack.HSHelpStack;
 import com.tenmiles.helpstack.R;
 import com.tenmiles.helpstack.activities.HSActivityManager;
-import com.tenmiles.helpstack.activities.NewIssueActivity;
 import com.tenmiles.helpstack.fragments.SearchFragment.OnReportAnIssueClickListener;
 import com.tenmiles.helpstack.helper.HSBaseExpandableListAdapter;
 import com.tenmiles.helpstack.logic.HSSource;
@@ -32,8 +27,8 @@ import com.tenmiles.helpstack.model.HSError;
 import com.tenmiles.helpstack.model.HSKBItem;
 import com.tenmiles.helpstack.model.HSTicket;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentManager;
 
 public class HomeFragment extends TaskFragment implements TaskFragment.TaskCallbacks {
 
@@ -134,7 +129,7 @@ public class HomeFragment extends TaskFragment implements TaskFragment.TaskCallb
         setHasOptionsMenu(true);
 
         // Initialize gear
-        gearSource = HSSource.getInstance(getActivity());
+        gearSource = new HSSource(getActivity());
 
         return rootView;
     }
@@ -173,25 +168,6 @@ public class HomeFragment extends TaskFragment implements TaskFragment.TaskCallb
         }.getType()));
         outState.putString(KEY_TICKETS, HSUtils.convertObjectToStringJson(fetchedTickets, new TypeToken<HSTicket[]>() {
         }.getType()));
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == REQUEST_CODE_NEW_TICKET) {
-            if (resultCode == HSActivityManager.resultCode_sucess) {
-                gearSource.refreshUser();
-                ArrayList<HSTicket> temp = new ArrayList<HSTicket>();
-                temp.add((HSTicket) data.getSerializableExtra(NewIssueActivity.RESULT_TICKET));
-                temp.addAll(Arrays.asList(fetchedTickets));
-                HSTicket[] array = new HSTicket[0];
-                array = temp.toArray(array);
-                fetchedTickets = array;
-                refreshList();
-                mExpandableListView.setSelectedGroup(1);
-            }
-        }
     }
 
     @Override
@@ -239,8 +215,6 @@ public class HomeFragment extends TaskFragment implements TaskFragment.TaskCallb
     protected void articleClickedOnPosition(HSKBItem kbItemClicked) {
         if (kbItemClicked.getArticleType() == HSKBItem.TYPE_ARTICLE) {
             HSActivityManager.startArticleActivity(this, kbItemClicked, REQUEST_CODE_NEW_TICKET);
-        } else {
-            HSActivityManager.startSectionActivity(this, kbItemClicked, REQUEST_CODE_NEW_TICKET);
         }
     }
 
@@ -254,9 +228,7 @@ public class HomeFragment extends TaskFragment implements TaskFragment.TaskCallb
     }
 
     @Override
-    public void onProgressUpdate(int percent) {
-
-    }
+    public void onProgressUpdate(int percent) { }
 
     @Override
     public void onCancelled() {

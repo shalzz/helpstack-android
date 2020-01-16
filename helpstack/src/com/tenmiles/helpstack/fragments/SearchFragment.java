@@ -77,7 +77,6 @@ public class SearchFragment extends HSFragmentParent {
 
         listView.addFooterView(report_an_issue_view);
         listView.setAdapter(searchAdapter);
-        listView.setOnItemClickListener(listItemClickListener);
 		
 		return rootView;
 	}
@@ -114,24 +113,6 @@ public class SearchFragment extends HSFragmentParent {
 			searchAdapter.refreshList(allKbArticles);
 			searchAdapter.getFilter().filter("");
 			searchAdapter.notifyDataSetChanged();
-		}
-	}
-	
-	protected OnItemClickListener listItemClickListener = new OnItemClickListener() {
-
-		@Override
-		public void onItemClick(AdapterView<?> parent, View view,
-				int position, long id) {
-			HSKBItem kbItemClicked = (HSKBItem) searchAdapter.getItem(position);
-			articleClickedOnPosition(kbItemClicked);
-		}
-	};
-	
-	protected void articleClickedOnPosition(HSKBItem kbItemClicked) {
-		if(kbItemClicked.getArticleType() == HSKBItem.TYPE_ARTICLE) {
-			HSActivityManager.startArticleActivity(this, kbItemClicked, HomeFragment.REQUEST_CODE_NEW_TICKET);
-		} else {
-			HSActivityManager.startSectionActivity(this, kbItemClicked, HomeFragment.REQUEST_CODE_NEW_TICKET);
 		}
 	}
 	

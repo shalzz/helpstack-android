@@ -53,43 +53,22 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class HSSource {
-    private static final String TAG = HSSource.class.getSimpleName();
 
     private static final String HELPSTACK_DIRECTORY = "helpstack";
     private static final String HELPSTACK_TICKETS_FILE_NAME = "tickets";
     private static final String HELPSTACK_TICKETS_USER_DATA = "user_credential";
     private static final String HELPSTACK_DRAFT = "draft";
 
-    private static HSSource singletonInstance = null;
     private HSGear gear;
     private Context mContext;
     private HSCachedTicket cachedTicket;
     private HSCachedUser cachedUser;
     private HSDraft draftObject;
-    private HSSource(Context context) {
+
+    public HSSource(Context context) {
         this.mContext = context;
         setGear(HSHelpStack.getInstance(context).getGear());
         refreshFieldsFromCache();
-    }
-
-    /**
-     * @param context
-     * @return singleton instance of this class.
-     */
-    public static HSSource getInstance(Context context) {
-        if (singletonInstance == null) {
-            synchronized (HSSource.class) { // 1
-                if (singletonInstance == null) // 2
-                {
-                    Log.d(TAG, "New Instance");
-                    singletonInstance = new HSSource(
-                            context.getApplicationContext()); // 3
-                }
-            }
-        }
-        // As this singleton can be called even before gear is set, refreshing it
-        singletonInstance.setGear(HSHelpStack.getInstance(context).getGear());
-        return singletonInstance;
     }
 
     private static String getDeviceInformation(Context activity) {
@@ -131,74 +110,8 @@ public class HSSource {
         this.gear = gear;
     }
 
-    public boolean isNewUser() {
-        return cachedUser.getUser() == null;
-    }
-
-    public void refreshUser() {
-        doReadUserFromCache();
-    }
-
     public HSUser getUser() {
         return cachedUser.getUser();
-    }
-
-    public String getDraftSubject() {
-        if (draftObject != null) {
-            return draftObject.getSubject();
-        }
-        return null;
-    }
-
-    public String getDraftMessage() {
-        if (draftObject != null) {
-            return draftObject.getMessage();
-        }
-        return null;
-    }
-
-    public HSUser getDraftUser() {
-        if (draftObject != null) {
-            return draftObject.getDraftUser();
-        }
-        return null;
-    }
-
-    public HSAttachment[] getDraftAttachments() {
-        if (draftObject != null) {
-            return draftObject.getAttachments();
-        }
-        return null;
-    }
-
-    public String getDraftReplyMessage() {
-        if (draftObject != null) {
-            return draftObject.getDraftReplyMessage();
-        }
-        return null;
-    }
-
-    public HSAttachment[] getDraftReplyAttachments() {
-        if (draftObject != null) {
-            return draftObject.getDraftReplyAttachments();
-        }
-        return null;
-    }
-
-    public void saveTicketDetailsInDraft(String subject, String message, HSAttachment[] attachmentsArray) {
-        doSaveTicketDraftForGearInCache(subject, message, attachmentsArray);
-    }
-
-    public void saveUserDetailsInDraft(HSUser user) {
-        doSaveUserDraftForGearInCache(user);
-    }
-
-    public void saveReplyDetailsInDraft(String message, HSAttachment[] attachmentsArray) {
-        doSaveReplyDraftForGearInCache(message, attachmentsArray);
-    }
-
-    public boolean haveImplementedTicketFetching() {
-        return gear.haveImplementedTicketFetching();
     }
 
     public String getSupportEmailAddress() {
@@ -217,16 +130,7 @@ public class HSSource {
      * @param requestCode
      */
     public void launchCreateNewTicketScreen(HSFragmentParent fragment, int requestCode) {
-
-        if (haveImplementedTicketFetching()) {
-            if (isNewUser()) {
-                HSActivityManager.startNewIssueActivity(fragment, null, requestCode);
-            } else {
-                HSActivityManager.startNewIssueActivity(fragment, getUser(), requestCode);
-            }
-        } else {
-            launchEmailAppWithEmailAddress(fragment.getActivity());
-        }
+        launchEmailAppWithEmailAddress(fragment.getActivity());
     }
 
     /////////////////////////////////////////////////
@@ -302,26 +206,6 @@ public class HSSource {
         }
     }
 
-    protected void doSaveNewTicketPropertiesForGearInCache(HSTicket ticket) {
-        cachedTicket.addTicketAtStart(ticket);
-
-        Gson gson = new Gson();
-        String ticketsgson = gson.toJson(cachedTicket);
-        File ticketFile = new File(getProjectDirectory(), HELPSTACK_TICKETS_FILE_NAME);
-
-        writeJsonIntoFile(ticketFile, ticketsgson);
-    }
-
-    protected void doSaveNewUserPropertiesForGearInCache(HSUser user) {
-        cachedUser.setUser(user);
-
-        Gson gson = new Gson();
-        String userjson = gson.toJson(cachedUser);
-        File userFile = new File(getProjectDirectory(), HELPSTACK_TICKETS_USER_DATA);
-
-        writeJsonIntoFile(userFile, userjson);
-    }
-
     protected void doReadTicketsFromCache() {
         File ticketFile = new File(getProjectDirectory(), HELPSTACK_TICKETS_FILE_NAME);
         String json = readJsonFromFile(ticketFile);
@@ -358,26 +242,6 @@ public class HSSource {
         }
     }
 
-    protected void doSaveTicketDraftForGearInCache(String subject, String message, HSAttachment[] attachmentsArray) {
-        draftObject.setDraftSubject(subject);
-        draftObject.setDraftMessage(message);
-        draftObject.setDraftAttachments(attachmentsArray);
-
-        writeDraftIntoFile();
-    }
-
-    protected void doSaveUserDraftForGearInCache(HSUser user) {
-        draftObject.setDraftUser(user);
-        writeDraftIntoFile();
-    }
-
-    protected void doSaveReplyDraftForGearInCache(String message, HSAttachment[] attachmentsArray) {
-        draftObject.setDraftReplyMessage(message);
-        draftObject.setDraftReplyAttachments(attachmentsArray);
-
-        writeDraftIntoFile();
-    }
-
     private void writeDraftIntoFile() {
         Gson gson = new Gson();
         String draftJson = gson.toJson(draftObject);
@@ -392,78 +256,5 @@ public class HSSource {
             projDir.mkdirs();
 
         return projDir;
-    }
-
-    public void clearTicketDraft() {
-        saveTicketDetailsInDraft("", "", null);
-    }
-
-    public void clearReplyDraft() {
-        saveReplyDetailsInDraft("", null);
-    }
-
-    protected HSUploadAttachment[] convertAttachmentArrayToUploadAttachment(HSAttachment[] attachment) {
-
-        HSUploadAttachment[] upload_attachments = new HSUploadAttachment[0];
-
-        if (attachment != null && attachment.length > 0) {
-            int attachmentCount = gear.getNumberOfAttachmentGearCanHandle();
-            assert attachmentCount >= attachment.length : "Gear cannot handle more than " + attachmentCount + " attachments";
-            upload_attachments = new HSUploadAttachment[attachment.length];
-            for (int i = 0; i < upload_attachments.length; i++) {
-                upload_attachments[i] = new HSUploadAttachment(mContext, attachment[i]);
-            }
-        }
-
-        return upload_attachments;
-    }
-
-    public void deleteAllFiles() {
-        try {
-            File dir = getProjectDirectory();
-            deleteRecursive(dir);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    private void deleteRecursive(File fileOrDirectory) {
-        if (fileOrDirectory != null) {
-            if (fileOrDirectory.isDirectory())
-                for (File child : fileOrDirectory.listFiles())
-                    deleteRecursive(child);
-
-            fileOrDirectory.delete();
-        }
-    }
-
-    private class NewTicketSuccessWrapper implements OnNewTicketFetchedSuccessListener {
-
-        private OnNewTicketFetchedSuccessListener lastListener;
-
-        public NewTicketSuccessWrapper(OnNewTicketFetchedSuccessListener lastListener) {
-            this.lastListener = lastListener;
-        }
-
-        @Override
-        public void onSuccess(HSUser udpatedUserDetail, HSTicket ticket) {
-            if (lastListener != null)
-                lastListener.onSuccess(udpatedUserDetail, ticket);
-        }
-    }
-
-    private class SuccessWrapper implements OnFetchedArraySuccessListener {
-
-        private OnFetchedArraySuccessListener lastListener;
-
-        public SuccessWrapper(OnFetchedArraySuccessListener lastListener) {
-            this.lastListener = lastListener;
-        }
-
-        @Override
-        public void onSuccess(Object[] successObject) {
-            if (lastListener != null)
-                lastListener.onSuccess(successObject);
-        }
     }
 }

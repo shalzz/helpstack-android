@@ -28,6 +28,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.tenmiles.helpstack.activities.HomeActivity;
+import com.tenmiles.helpstack.gears.HSEmailGear;
 import com.tenmiles.helpstack.logic.HSGear;
 import com.tenmiles.helpstack.logic.HSSource;
 
@@ -40,7 +41,6 @@ import com.tenmiles.helpstack.logic.HSSource;
  */
 public class HSHelpStack {
 	private static final String TAG = HSHelpStack.class.getSimpleName();
-	public static final String LOG_TAG = HSHelpStack.class.getSimpleName();
 
     /**
      *
@@ -61,21 +61,16 @@ public class HSHelpStack {
 
     /**
      *
-     * Sets which gear to use in HelpStack. It has to be set before calling any show* functions.
-     *
-     * @param gear Gear
-     */
-	public void setGear(HSGear gear) {
-		this.gear = gear;
-	}
-
-    /**
-     *
      * @return gear which HelpStack has to use.
      */
 	public HSGear getGear() {
-		return this.gear;
+		return new HSEmailGear(supportEmailAddress, localArticleResId);
 	}
+
+    public void setOptions(String email, int article_id) {
+        this.supportEmailAddress = email;
+        this.localArticleResId = article_id;
+    }
 
     /**
      *
@@ -86,18 +81,6 @@ public class HSHelpStack {
 	public void showHelp(Activity activity) {
         activity.startActivity(new Intent(this.mContext, HomeActivity.class));
 	}
-
-    /**
-     * Call this, if you want to override gear method of article handling, in this case, you can provide articles locally and let HelpStack choose from it.
-     *
-     * It is light weight call. Call this after calling setGear.
-     *
-     * @param articleResId Article Resource ID
-     */
-    public void overrideGearArticlesWithLocalArticlePath(int articleResId) {
-        assert gear != null : "Some gear has to be set before overriding gear with local article path";
-        gear.setNotImplementingKBFetching(articleResId);
-    }
 
     /**
      *
@@ -117,32 +100,19 @@ public class HSHelpStack {
         return this.showCredits;
     }
 
-    /**
-     *
-     * clears all files.
-     */
-    public void clear(Context context) {
-        HSSource source = HSSource.getInstance(context);
-        source.deleteAllFiles();
-    }
-	
-
     ////////////////////////////////////////////////////
     /////////////   Private Variables   ///////////////
     ///////////////////////////////////////////////////
 
     private static HSHelpStack singletonInstance = null;
     private Context mContext;
+    private String supportEmailAddress;
+    private int localArticleResId;
 
-    private HSGear gear;
     private boolean showCredits;
 
     private HSHelpStack(Context context) {
         this.mContext = context;
-        init(context);
-    }
-
-    private void init(Context context) {
         this.setShowCredits(true);
     }
 }
