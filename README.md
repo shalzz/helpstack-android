@@ -2,6 +2,10 @@
   <a href="http://www.helpstack.io/"><img src="https://s3-us-west-2.amazonaws.com/helpstack-screenshots-dont-delete/Helpstack+by+Happyfox+logos.png" alt="HelpStack" title="Logo" /></a>
 </p>
 
+![JitPack](https://img.shields.io/jitpack/v/github/shalzz/helpstack-android)
+
+> This version is heavily simplified and has only the email "gear" available.
+
 **HelpStack** is a library to provide in-app support for your app's users, by connecting with the helpdesk of your choice. Your app’s users can easily raise requests or report issues from within your app.
 
 With HelpStack, you can:
